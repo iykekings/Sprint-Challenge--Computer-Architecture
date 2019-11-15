@@ -70,10 +70,14 @@ class CPU:
     def handle_jeq(self, a, b):
         if (self.fl == 0b00000001):
             self.handle_jmp(a, b)
+        else:
+            self.pc += 2
 
     def handle_jne(self, a, b):
         if (self.fl != 0b00000001):
             self.handle_jmp(a, b)
+        else:
+            self.pc += 2
 
     def handle_jmp(self, a, b):
         pointer = self.register[a]
@@ -84,12 +88,7 @@ class CPU:
         self.pc += 2
 
     def handle_cmp(self, a, b):
-        if(a == b):
-            self.fl = 0b00000001
-        elif(a > b):
-            self.fl = 0b00000010
-        elif(a < b):
-            self.fl = 0b00000100
+        self.alu("CMP", a, b)
         self.pc += 3
 
     def handle_mul(self, a, b):
@@ -195,6 +194,13 @@ class CPU:
             self.register[reg_a] += self.register[reg_b]
         elif op == "MUL":
             self.register[reg_a] *= self.register[reg_b]
+        elif op == "CMP":
+            if(self.register[reg_a] == self.register[reg_b]):
+                self.fl = 0b00000001
+            elif(self.register[reg_a] > self.register[reg_b]):
+                self.fl = 0b00000010
+            elif(self.register[reg_a] < self.register[reg_b]):
+                self.fl = 0b00000100
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -225,5 +231,5 @@ class CPU:
             self.ir = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-            print(f"{self.ir:08b}")
+            # print(self.ir)
             self.branchtable[self.ir](operand_a, operand_b)
