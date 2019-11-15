@@ -11,6 +11,8 @@ PUSH = 0b01000101
 CALL = 0b01010000
 RET = 0b00010001
 ADD = 0b10100000
+CMP = 0b10100111
+JMP = 0b01010100
 
 class CPU:
     """Main CPU class."""
@@ -35,6 +37,9 @@ class CPU:
         
         self.halted = False
 
+        # flag: 00000LGE
+        self.fl = 0b00000000
+
         # set up branchtable
         self.branchtable = {
             LDI: self.handle_ldi,
@@ -45,7 +50,8 @@ class CPU:
             PUSH: self.handle_push,
             POP: self.handle_pop,
             CALL: self.handle_call,
-            RET: self.handle_ret
+            RET: self.handle_ret,
+            CMP: self.handle_cmp
         }
 
     
@@ -60,6 +66,18 @@ class CPU:
         print(self.register[a])
         self.pc += 2
 
+    def handle_cmp(self, a, b):
+        if(a == b):
+            self.fl = 0b00000001
+        elif(a > b):
+            self.fl = 0b00000010
+        elif(a < b):
+            self.fl = 0b00000100
+        self.pc += 3
+
+    def handle_mul(self, a, b):
+        self.alu("MUL", a, b)
+        self.pc += 3
     def handle_mul(self, a, b):
         self.alu("MUL", a, b)
         self.pc += 3
@@ -160,7 +178,6 @@ class CPU:
             self.register[reg_a] += self.register[reg_b]
         elif op == "MUL":
             self.register[reg_a] *= self.register[reg_b]
-        #elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -172,7 +189,7 @@ class CPU:
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
+            self.fl,
             #self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
