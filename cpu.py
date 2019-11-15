@@ -51,7 +51,8 @@ class CPU:
             POP: self.handle_pop,
             CALL: self.handle_call,
             RET: self.handle_ret,
-            CMP: self.handle_cmp
+            CMP: self.handle_cmp,
+            JMP: self.handle_jmp
         }
 
     
@@ -61,6 +62,10 @@ class CPU:
     def handle_ldi(self, a, b):
         self.register[a] = b
         self.pc += 3
+        
+    def handle_jmp(self, a, b):
+        pointer = self.register[a]
+        self.pc = pointer
     
     def handle_prn(self, a, b):
         print(self.register[a])
