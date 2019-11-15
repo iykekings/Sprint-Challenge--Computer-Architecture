@@ -14,6 +14,7 @@ ADD = 0b10100000
 CMP = 0b10100111
 JMP = 0b01010100
 JEQ = 0b01010101
+JNE = 0b01010110
 
 class CPU:
     """Main CPU class."""
@@ -54,7 +55,8 @@ class CPU:
             RET: self.handle_ret,
             CMP: self.handle_cmp,
             JMP: self.handle_jmp,
-            JEQ: self.handle_jeq
+            JEQ: self.handle_jeq,
+            JNE: self.handle_jne
         }
 
     
@@ -67,6 +69,10 @@ class CPU:
 
     def handle_jeq(self, a, b):
         if (self.fl == 0b00000001):
+            self.handle_jmp(a, b)
+
+    def handle_jne(self, a, b):
+        if (self.fl != 0b00000001):
             self.handle_jmp(a, b)
 
     def handle_jmp(self, a, b):
