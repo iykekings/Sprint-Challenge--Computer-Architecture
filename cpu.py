@@ -80,8 +80,7 @@ class CPU:
             self.pc += 2
 
     def handle_jmp(self, a, b):
-        pointer = self.register[a]
-        self.pc = pointer
+        self.pc = self.register[a]
     
     def handle_prn(self, a, b):
         print(self.register[a])
@@ -231,5 +230,4 @@ class CPU:
             self.ir = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-            # print(self.ir)
             self.branchtable[self.ir](operand_a, operand_b)
