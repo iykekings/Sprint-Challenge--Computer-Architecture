@@ -98,8 +98,8 @@ class CPU:
         """Load a program into memory."""
 
         if filename[-4:] != ".ls8":
-            full_filename = f"examples/{filename}.ls8"
-        else: full_filename = f"examples/{filename}"
+            full_filename = f"{filename}.ls8"
+        else: full_filename = f"{filename}"
         try:
             address = 0
             with open(full_filename) as f:
@@ -191,4 +191,5 @@ class CPU:
             self.ir = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
+            print(f"{self.ir:08b}")
             self.branchtable[self.ir](operand_a, operand_b)
