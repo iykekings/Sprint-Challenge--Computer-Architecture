@@ -13,6 +13,7 @@ RET = 0b00010001
 ADD = 0b10100000
 CMP = 0b10100111
 JMP = 0b01010100
+JEQ = 0b01010101
 
 class CPU:
     """Main CPU class."""
@@ -52,7 +53,8 @@ class CPU:
             CALL: self.handle_call,
             RET: self.handle_ret,
             CMP: self.handle_cmp,
-            JMP: self.handle_jmp
+            JMP: self.handle_jmp,
+            JEQ: self.handle_jeq
         }
 
     
@@ -62,7 +64,11 @@ class CPU:
     def handle_ldi(self, a, b):
         self.register[a] = b
         self.pc += 3
-        
+
+    def handle_jeq(self, a, b):
+        if (self.fl == 0b00000001):
+            self.handle_jmp(a, b)
+
     def handle_jmp(self, a, b):
         pointer = self.register[a]
         self.pc = pointer
